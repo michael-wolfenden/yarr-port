@@ -1,4 +1,4 @@
-var config = require('../configuration');
+var paths = require('../paths');
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -6,16 +6,17 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var Clean = require('clean-webpack-plugin');
 var fs = require('fs');
 var sourceMappingURL = require("source-map-url")
+var pkg = require('../package.json');
 
 var webpackConfig = {
 
     entry: {
-        app: config.paths.entryFile,
-        vendor: config.vendorsToBundleSeperately
+        app: paths.entryFile,
+        vendor:  Object.keys(pkg.dependencies)
     },
 
     output: {
-        path: config.paths.distDir,
+        path: paths.distDir,
         filename: 'assets/js/[name].[chunkhash].js',
         chunkFilename: '[chunkhash].js'
     },
@@ -26,7 +27,7 @@ var webpackConfig = {
         preLoaders: [
             {
                 test: /\.js$/,
-                include: config.paths.appDir,
+                include: paths.appDir,
                 loader: 'eslint'
             }
         ],
@@ -35,7 +36,7 @@ var webpackConfig = {
             {
                 // ref: http://jamesknelson.com/using-es6-in-the-browser-with-babel-6-and-webpack/
                 test: /\.js$/,
-                include: config.paths.appDir,
+                include: paths.appDir,
                 loaders: [
                     'babel?presets[]=es2015,plugins[]=transform-runtime',
                     'virtual-dom'
@@ -44,7 +45,7 @@ var webpackConfig = {
 
             {
                 test: /\.scss$/,
-                include: config.paths.appDir,
+                include: paths.appDir,
                 loader: ExtractTextPlugin.extract('css?sourceMap!sass?sourceMap&outputStyle=expanded')
             }
         ]
@@ -55,7 +56,7 @@ var webpackConfig = {
     },
 
     plugins: [
-        new Clean(config.paths.distDir),
+        new Clean(paths.distDir),
 
         new webpack.NamedModulesPlugin(),
 
@@ -93,7 +94,7 @@ function addManifestChunckContentsToIndexTemplate(templateParams, compilation, c
     // manifestSource will include the //# sourceMappingURL line if including sourcemaps so we need to remove
     templateParams.htmlWebpackPlugin.options.webpackManifest = sourceMappingURL.removeFrom(manifestSource);
 
-    fs.readFile(config.paths.index, 'utf8', callback);
+    fs.readFile(paths.index, 'utf8', callback);
 }
 
 function getGeneratedFilenamesForChunk(stats, chunkName) {
@@ -112,7 +113,7 @@ function getGeneratedFilenamesForChunk(stats, chunkName) {
 function deleteManifestFiles(stats) {
     var manifestFilenames = getGeneratedFilenamesForChunk(stats, 'manifest');
     manifestFilenames.forEach(function (manifestFilename) {
-        fs.unlinkSync(path.join(config.paths.distDir, manifestFilename));
+        fs.unlinkSync(path.join(paths.distDir, manifestFilename));
     })
 }
 

@@ -1,4 +1,4 @@
-var config = require('../configuration');
+var paths = require('../paths');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -7,7 +7,7 @@ var webpackOptions = {
     entry: [
         'babel-polyfill',
         'webpack/hot/dev-server',
-        config.paths.entryFile
+        paths.entryFile
     ],
 
     output: {
@@ -20,8 +20,8 @@ var webpackOptions = {
         preLoaders: [
             {
                 test: /\.js$/,
-                include: config.paths.appDir,
-                loader: 'eslint-loader'
+                include: paths.appDir,
+                loader: 'eslint'
             }
         ],
 
@@ -29,7 +29,7 @@ var webpackOptions = {
             {
                 // ref: http://jamesknelson.com/using-es6-in-the-browser-with-babel-6-and-webpack/
                 test: /\.js$/,
-                include: config.paths.appDir,
+                include: paths.appDir,
                 loaders: [
                     'babel?presets[]=es2015,plugins[]=transform-runtime', 
                     'virtual-dom'
@@ -38,7 +38,7 @@ var webpackOptions = {
 
             {
                 test: /\.scss$/,
-                include: config.paths.appDir,
+                include: paths.appDir,
                 loaders: [
                     'style', 
                     'css?sourceMap', 
@@ -51,7 +51,7 @@ var webpackOptions = {
     plugins: [
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: config.paths.index,
+            template: paths.index,
             inject: true,
             devServer: 'http://localhost:8080/webpack-dev-server.js'
         }),
