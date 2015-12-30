@@ -1,6 +1,6 @@
 import { h } from 'virtual-dom';
 
-import feedsStream from '../feeds';
+import postsStream from '../models/posts';
 import { formatDate } from '../utils';
 
 const postView = post =>
@@ -40,7 +40,7 @@ const view = postsView =>
   </section>;
 
 const viewStream = () =>
-    feedsStream
+    postsStream
         .map(posts => posts.map(postView))
         .reduce((acc, posts) => acc.concat(posts))
         .map(view);
