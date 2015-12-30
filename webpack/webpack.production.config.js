@@ -7,12 +7,13 @@ var Clean = require('clean-webpack-plugin');
 var fs = require('fs');
 var sourceMappingURL = require("source-map-url")
 var pkg = require('../package.json');
+var autoprefixer = require('autoprefixer');
 
 var webpackConfig = {
 
     entry: {
         app: paths.entryFile,
-        vendor:  Object.keys(pkg.dependencies)
+        vendor: Object.keys(pkg.dependencies)
     },
 
     output: {
@@ -46,13 +47,21 @@ var webpackConfig = {
             {
                 test: /\.scss$/,
                 include: paths.appDir,
-                loader: ExtractTextPlugin.extract('css?sourceMap!sass?sourceMap&outputStyle=expanded')
+                loader: ExtractTextPlugin.extract('css?sourceMap!postcss!sass?sourceMap&outputStyle=expanded')
             }
         ]
     },
 
     eslint: {
         failOnError: true
+    },
+
+    postcss: function () {
+        return [
+            autoprefixer({
+                browsers: ['last 2 versions']
+            })
+        ];
     },
 
     plugins: [
@@ -79,7 +88,7 @@ var webpackConfig = {
             templateContent: addManifestChunckContentsToIndexTemplate
         }),
 
-        new ExtractTextPlugin('assets/css/app-[chunkhash].css', {allChunks: true}),
+        new ExtractTextPlugin('assets/css/app-[chunkhash].css', { allChunks: true }),
 
         function () {
             this.plugin('done', deleteManifestFiles);

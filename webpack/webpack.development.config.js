@@ -1,6 +1,7 @@
 var paths = require('../paths');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var autoprefixer = require('autoprefixer');
 
 var webpackOptions = {
 
@@ -42,12 +43,21 @@ var webpackOptions = {
                 loaders: [
                     'style', 
                     'css?sourceMap', 
+                    'postcss',
                     'sass?sourceMap&outputStyle=expanded'
                 ]
             }
         ]
     },
 
+    postcss: function () {
+        return [
+            autoprefixer({
+                browsers: ['last 2 versions']
+            })
+        ];
+    },
+    
     plugins: [
         new HtmlWebpackPlugin({
             filename: 'index.html',
