@@ -2,6 +2,7 @@ var config = require('../configuration');
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var Clean = require('clean-webpack-plugin');
 var fs = require('fs');
 var sourceMappingURL = require("source-map-url")
@@ -26,7 +27,7 @@ var webpackConfig = {
             {
                 test: /\.js$/,
                 include: config.paths.appDir,
-                loader: 'eslint-loader'
+                loader: 'eslint'
             }
         ],
 
@@ -39,6 +40,12 @@ var webpackConfig = {
                     'babel?presets[]=es2015,plugins[]=transform-runtime',
                     'virtual-dom'
                 ]
+            },
+
+            {
+                test: /\.scss$/,
+                include: config.paths.appDir,
+                loader: ExtractTextPlugin.extract('css?sourceMap!sass?sourceMap&outputStyle=expanded')
             }
         ]
     },
@@ -70,6 +77,8 @@ var webpackConfig = {
             excludeChunks: ['manifest'],
             templateContent: addManifestChunckContentsToIndexTemplate
         }),
+
+        new ExtractTextPlugin('assets/css/app-[chunkhash].css', {allChunks: true}),
 
         function () {
             this.plugin('done', deleteManifestFiles);

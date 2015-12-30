@@ -20,7 +20,9 @@ var configuration = {
 
     vendorsToBundleSeperately: [
         'babel-polyfill',
-        'rx'
+        'rx',
+        'jquery',
+        'virtual-dom'
     ]
 };
 

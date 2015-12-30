@@ -31,8 +31,18 @@ var webpackOptions = {
                 test: /\.js$/,
                 include: config.paths.appDir,
                 loaders: [
-                    'babel?presets[]=es2015,plugins[]=transform-runtime',
+                    'babel?presets[]=es2015,plugins[]=transform-runtime', 
                     'virtual-dom'
+                ]
+            },
+
+            {
+                test: /\.scss$/,
+                include: config.paths.appDir,
+                loaders: [
+                    'style', 
+                    'css?sourceMap', 
+                    'sass?sourceMap&outputStyle=expanded'
                 ]
             }
         ]
