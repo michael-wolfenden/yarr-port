@@ -3,7 +3,7 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var Clean = require('clean-webpack-plugin');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 var fs = require('fs');
 var sourceMappingURL = require("source-map-url")
 var pkg = require('../package.json');
@@ -65,65 +65,51 @@ var webpackConfig = {
     },
 
     plugins: [
-        new Clean(paths.distDir),
-
-        new webpack.NamedModulesPlugin(),
+        new CleanWebpackPlugin(paths.distDir),
 
         new webpack.optimize.CommonsChunkPlugin({
             names: ['vendor', 'manifest']
         }),
-
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            },
-            output: {
-                comments: false
-            }
-        }),
+        
+        new webpack.NamedModulesPlugin(),
 
         new HtmlWebpackPlugin({
             inject: true,
             excludeChunks: ['manifest'],
-            templateContent: addManifestChunckContentsToIndexTemplate
+            templateContent: addManifestChunckContentsToIndexTemplate,
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true
+            }
         }),
 
         new ExtractTextPlugin('assets/css/app-[chunkhash].css', { allChunks: true }),
-
-        function () {
-            this.plugin('done', deleteManifestFiles);
-        }
+        
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
+        })
     ]
 };
 
 function addManifestChunckContentsToIndexTemplate(templateParams, compilation, callback) {
-    var manifestFilename = getGeneratedFilenamesForChunk(compilation.getStats(), 'manifest')[0];
-    var manifestSource = compilation.assets[manifestFilename].source();
+    Object.keys(compilation.assets)
+        .filter(function (key) {
+            return key.indexOf('manifest.') !== -1;
+        })
+        .forEach(function (manifestAsset) {
+            var isManifestSourceMap = manifestAsset.indexOf('.map') !== -1;
+            if (!isManifestSourceMap) {
+                // manifestSource will include the //# sourceMappingURL line if including sourcemaps so we need to remove
+                var manifestSource = compilation.assets[manifestAsset].source();
+                templateParams.htmlWebpackPlugin.options.webpackManifest = sourceMappingURL.removeFrom(manifestSource);
+            }
 
-    // manifestSource will include the //# sourceMappingURL line if including sourcemaps so we need to remove
-    templateParams.htmlWebpackPlugin.options.webpackManifest = sourceMappingURL.removeFrom(manifestSource);
+            delete compilation.assets[manifestAsset];
+        });
 
     fs.readFile(paths.index, 'utf8', callback);
-}
-
-function getGeneratedFilenamesForChunk(stats, chunkName) {
-    // if including sourcemaps assets will return an array with
-    // the filename of the asset and the filename of the assets 
-    // sourcemap, else just a string with the filename of the asset
-    // for example:
-    // ['assets/js/manifest.ade6990fa0a5efdc7b57.js', 'assets/js/manifest.ade6990fa0a5efdc7b57.js.map'] vs
-    // 'assets/js/manifest.ade6990fa0a5efdc7b57.js'
-
-    var assets = stats.toJson().assetsByChunkName[chunkName];
-    if (Array.isArray(assets)) return assets;
-    return assets.split();
-}
-
-function deleteManifestFiles(stats) {
-    var manifestFilenames = getGeneratedFilenamesForChunk(stats, 'manifest');
-    manifestFilenames.forEach(function (manifestFilename) {
-        fs.unlinkSync(path.join(paths.distDir, manifestFilename));
-    })
-}
+};
 
 module.exports = webpackConfig;

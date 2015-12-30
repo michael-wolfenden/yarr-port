@@ -9,8 +9,13 @@
 <body class="home-template">
   <span id="app"></span>
   
-{% if (o.htmlWebpackPlugin.options.webpackManifest) { %}<script>{%#o.htmlWebpackPlugin.options.webpackManifest%}</script> {% } %}
-{% if (o.htmlWebpackPlugin.options.devServer) { %}<script src="{%=o.htmlWebpackPlugin.options.devServer%}"></script> {% } %}
+{% if(o.htmlWebpackPlugin.options.webpackManifest) { %}
+<script>{%#o.htmlWebpackPlugin.options.webpackManifest%};</script>
+{% } %}
+
+{% if (o.htmlWebpackPlugin.options.devServer) { %}
+<script src="{%=o.htmlWebpackPlugin.options.devServer%}"></script> 
+{% } %}
 </body>
 
 </html>
