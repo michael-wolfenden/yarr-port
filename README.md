@@ -4,13 +4,7 @@ My take on 'Yet Another RSS Reader' - https://github.com/channikhabra/yarr
 
 ## Getting started
 
-This will install all npm packages
-
-    > npm install
-
-## Development build
-
-This will run a live reload server at http://localhost:8080/index.html
+This will install all npm packages and then run a live reload server at http://localhost:8080/index.html
 
     > npm start
 

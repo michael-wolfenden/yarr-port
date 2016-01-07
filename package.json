@@ -4,7 +4,7 @@
   "description": "yarr-port",
   "main": "index.js",
   "scripts": {
-    "prestart": "open-url http://localhost:8080/index.html",
+    "prestart": "npm install && open-url http://localhost:8080/index.html",
     "start": "webpack-dev-server --config webpack/webpack.development.config.js --progress --colors --hot",
     "production": "webpack --config webpack/webpack.production.config.js --progress --colors"
   },
