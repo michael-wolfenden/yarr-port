@@ -42,7 +42,7 @@ const view = postsView =>
 const viewStream = () =>
     postsStream
         .map(posts => posts.map(postView))
-        .reduce((acc, posts) => acc.concat(posts))
-        .map(view);
+        .map(view)
+        .startWith(view());
 
 export default viewStream;

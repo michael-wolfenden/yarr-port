@@ -26,12 +26,7 @@ const viewStream = () => {
         .subscribe();
 
     return feedsStream
-        .map(feed => {
-            return { url: feed.feedUrl, name: feed.title };
-        })
-        .toArray()
         .startWith([])
-        .do(x => console.log(x))
         .map(feeds => feeds.map(nodeView))
         .map(view);
 };

@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "babel-polyfill": "6.3.14",
+    "dexie": "1.2.0",
     "jquery": "2.1.4",
     "rx": "4.0.7",
     "virtual-dom": "2.1.1"
