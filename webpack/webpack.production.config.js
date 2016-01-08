@@ -48,6 +48,13 @@ var webpackConfig = {
                 test: /\.scss$/,
                 include: paths.appDir,
                 loader: ExtractTextPlugin.extract('css?sourceMap!postcss!sass?sourceMap&outputStyle=expanded')
+            },
+
+            {
+                test: /\.json$/,
+                loaders: [
+                    'json'
+                ]
             }
         ]
     },

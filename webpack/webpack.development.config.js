@@ -32,7 +32,7 @@ var webpackOptions = {
                 test: /\.js$/,
                 include: paths.appDir,
                 loaders: [
-                    'babel?presets[]=es2015,plugins[]=transform-runtime', 
+                    'babel?presets[]=es2015,plugins[]=transform-runtime',
                     'virtual-dom'
                 ]
             },
@@ -41,10 +41,17 @@ var webpackOptions = {
                 test: /\.scss$/,
                 include: paths.appDir,
                 loaders: [
-                    'style', 
-                    'css?sourceMap', 
+                    'style',
+                    'css?sourceMap',
                     'postcss',
                     'sass?sourceMap&outputStyle=expanded'
+                ]
+            },
+
+            {
+                test: /\.json$/,
+                loaders: [
+                    'json'
                 ]
             }
         ]
@@ -57,7 +64,7 @@ var webpackOptions = {
             })
         ];
     },
-    
+
     plugins: [
         new HtmlWebpackPlugin({
             filename: 'index.html',

@@ -1,7 +1,7 @@
 import { h } from 'virtual-dom';
 
-import clicksByClassStream from '../events';
-import feedsStream from '../models/feeds';
+import { clicksByClassStream } from '../events';
+import { feedStream } from '../models/feeds';
 
 const nodeView = (feed, extraClasses) =>
   <li className="sidebar-feedlist-item">
@@ -14,6 +14,13 @@ const view = feedViews =>
         {feedViews}
     </ul>;
 
+const selectedFeedUrlStream = () =>
+    clicksByClassStream('sidebar-feed')
+        .do(e => e.preventDefault())
+        .map(e => e.target.href.split('/').reverse()[0] === 'all-feeds'
+            ? null
+            : e.target.href);
+
 const viewStream = () => {
     clicksByClassStream('sidebar-feed')
         .do(e => e.preventDefault())
@@ -25,10 +32,11 @@ const viewStream = () => {
         })
         .subscribe();
 
-    return feedsStream
+    return feedStream
         .startWith([])
         .map(feeds => feeds.map(nodeView))
         .map(view);
 };
 
 export default viewStream;
+export { selectedFeedUrlStream };

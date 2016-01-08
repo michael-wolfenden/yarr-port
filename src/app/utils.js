@@ -1,4 +1,4 @@
-export function formatDate(date) {
+function formatDate(date) {
     let dateAsDate = date;
 
     if (!dateAsDate) return '';
@@ -20,3 +20,18 @@ export function formatDate(date) {
 
     return `${day}, ${monthNames[monthIndex]}, ${year}`;
 }
+
+function dataAttrAsClass(attribute, el) {
+    const dataAttrs = Array.from(el.classList)
+        .filter(c => c.indexOf('data-') >= 0)
+        .map(attr => {
+            const [, key, val] = attr.split('-');
+            const res = {};
+            res[key] = val;
+            return res;
+        })[0];
+
+    return dataAttrs[attribute];
+}
+
+export { formatDate, dataAttrAsClass };

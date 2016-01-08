@@ -1,7 +1,8 @@
 import { h } from 'virtual-dom';
 import { Observable } from 'rx';
 
-import clicksByClassStream from '../events';
+import { clicksByClassStream, keyupsByClassStream } from '../events';
+import { fetchAllFeedsStream, addFeedStream } from '../models/feeds';
 
 const view = addFeedInputStyles =>
     <ul className="sidebar-controls">
@@ -19,6 +20,29 @@ const viewStream = () => {
         .map(show => show
             ? { display: 'inline-block' }
             : { display: 'none' });
+
+    const fetchAllBtnClicksStream = clicksByClassStream('fetch-all-btn')
+        .flatMap(fetchAllFeedsStream);
+
+    const addNewFeedStream = keyupsByClassStream('new-feed-input')
+        .do(e => {
+            e.target.classList.remove('error');
+            e.target.classList.remove('progress');
+        })
+        .filter(e => e.keyCode === 13)
+        .map(e => e.target.value)
+        .flatMap(feedUrl => addFeedStream(feedUrl))
+        .catch(e => {
+            const el = document.querySelector('.new-feed-input');
+            el.classList.add('error');
+
+            console.debug('Error while adding feed: ', e);
+
+            return addFeedStream.retry();
+        });
+
+    addNewFeedStream.subscribe(x => console.log(x));
+    fetchAllBtnClicksStream.subscribe(x => console.log(x));
 
     return Observable
         .combineLatest(

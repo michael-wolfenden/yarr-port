@@ -22,7 +22,6 @@ const reactiveDexieTableStream = (table, hookName) => {
             // Can't use `arguments` because webpack.
             // there are 4 arguments for 'updating' op, otherwise there are 3.
             // in case of 'updating' first arg is 'modifications', and other three are same
-            console.log('hookName', hookName);
             obs.onNext(pk, obj, txn, update);
         });
 

@@ -23,6 +23,7 @@
     "eslint-loader": "1.1.1",
     "extract-text-webpack-plugin": "0.9.1",
     "html-webpack-plugin": "1.7.0",
+    "json-loader": "0.5.4",
     "node-sass": "3.4.2",
     "open-url": "2.0.2",
     "postcss-loader": "0.8.0",
@@ -36,6 +37,7 @@
   "dependencies": {
     "babel-polyfill": "6.3.14",
     "dexie": "1.2.0",
+    "html2hscript": "1.2.2",
     "jquery": "2.1.4",
     "rx": "4.0.7",
     "virtual-dom": "2.1.1"
